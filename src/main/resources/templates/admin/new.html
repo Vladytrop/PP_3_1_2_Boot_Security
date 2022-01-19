@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Create User</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .container { max-width: 500px; margin: 0 auto; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input, select {
+            width: 100%; padding: 10px;
+            box-sizing: border-box; border: 1px solid #ddd;
+        }
+        .btn {
+            padding: 10px 20px; margin-right: 10px;
+            text-decoration: none; border-radius: 4px; border: none;
+            cursor: pointer;
+        }
+        .btn-submit { background: #4CAF50; color: white; }
+        .btn-cancel { background: #f44336; color: white; }
+        .error { color: red; font-size: 0.9em; margin-top: 5px; }
+        .checkbox-group { margin: 10px 0; }
+        .checkbox-group label { display: inline; font-weight: normal; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Создание нового пользователя</h1>
+
+    <form th:action="@{/admin}" th:object="${user}" method="post">
+        <div class="form-group">
+            <label for="username">Имя пользователя:</label>
+            <input type="text" id="username" th:field="*{username}" required>
+            <div th:if="${#fields.hasErrors('username')}" class="error">
+                <span th:errors="*{username}"></span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="password">Пароль:</label>
+            <input type="password" id="password" th:field="*{password}" required>
+            <div th:if="${#fields.hasErrors('password')}" class="error">
+                <span th:errors="*{password}"></span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Роли:</label>
+            <div class="checkbox-group">
+                <input type="checkbox" id="roleUser" name="roleIds" value="1" checked>
+                <label for="roleUser">ROLE_USER</label>
+            </div>
+            <div class="checkbox-group">
+                <input type="checkbox" id="roleAdmin" name="roleIds" value="2">
+                <label for="roleAdmin">ROLE_ADMIN</label>
+            </div>
+        </div>
+
+        <div>
+            <button type="submit" class="btn btn-submit">Создать</button>
+            <a th:href="@{/admin}" class="btn btn-cancel">Отмена</a>
+        </div>
+    </form>
+</div>
+</body>
+</html>
