@@ -44,7 +44,7 @@ public class AdminController {
 
     @GetMapping()
     public String index(Model model) {
-        model.addAttribute("user", uRepository.findAll());
+        model.addAttribute("users", uRepository.findAll());
         return "admin/index";
     }
 
@@ -117,8 +117,12 @@ public class AdminController {
                     , "Пароль не может быть пустым");
             return "admin/edit";
         }
-        else {
-            existUser.setPassword(passwordEncoder.encode(user.getPassword()));
+//        else {
+//            user.setPassword(passwordEncoder.encode(user.getPassword()));
+//        }
+
+        if (!user.getPassword().isEmpty()){
+           existUser.setPassword(passwordEncoder.encode(user.getPassword()));
         }
 
        Set<Role> roles;
