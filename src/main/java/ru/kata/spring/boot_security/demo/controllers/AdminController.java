@@ -116,12 +116,9 @@ public class AdminController {
                     ,"password.empty"
                     , "Пароль не может быть пустым");
             return "admin/edit";
-        } else {
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
         }
-
-        if (!user.getPassword().isEmpty()){
-           existUser.setPassword(passwordEncoder.encode(user.getPassword()));
+        else {
+            existUser.setPassword(passwordEncoder.encode(user.getPassword()));
         }
 
        Set<Role> roles;
