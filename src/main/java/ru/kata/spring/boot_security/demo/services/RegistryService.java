@@ -31,18 +31,33 @@ public class RegistryService {
 
     @Transactional
     public void register(User user) {
+
+        if (uRepository.findByUsername(user.getUsername()).isPresent()) {
+            throw new RuntimeException("Пользователь с таким логином уже существует");
+        }
+
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-        Set<Role> role = roleRepository.findByName("ROLE_USER");
-
-        if (role.isEmpty()) {
-            Role useRole = new Role();
-            useRole.setName("ROLE_USER");
-            roleRepository.save(useRole);
-            user.setRoles(Set.of(useRole));
-        } else {
-            user.setRoles(role);
-        }
+        Role role = roleRepository.findFirstByName("ROLE_USER").orElseGet(
+                () -> {
+                    Role newRole = new Role();
+                    newRole.setName("ROLE_USER");
+                    roleRepository.save(newRole);
+                    return newRole;
+                }
+        );
+        user.setRoles(Set.of(role));
         uRepository.save(user);
+//        Set<Role> role = roleRepository.findByName("ROLE_USER");
+//
+//        if (role.isEmpty()) {
+//            Role useRole = new Role();
+//            useRole.setName("ROLE_USER");
+//            roleRepository.save(useRole);
+//            user.setRoles(Set.of(useRole));
+//        } else {
+//            user.setRoles(role);
+//        }
+//        uRepository.save(user);
     }
 }

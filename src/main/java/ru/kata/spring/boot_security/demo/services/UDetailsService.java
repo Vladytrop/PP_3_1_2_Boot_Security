@@ -24,11 +24,7 @@ public class UDetailsService implements UserDetailsService {
     @Override
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<User> login = uRepository.findByUsername(username);
-
-        if (login.isEmpty()) {
-            throw new UsernameNotFoundException("Пользователь не найден");
-        }
-        return new User(login.get());
+        return uRepository.findByUsername(username).orElseThrow(
+                () -> new UsernameNotFoundException("Пользователь не найден"));
     }
 }

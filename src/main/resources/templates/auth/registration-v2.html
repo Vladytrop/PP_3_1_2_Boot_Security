@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Регистрация</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            width: 100%;
+            max-width: 450px;
+            animation: slideUp 0.5s ease;
+        }
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .form-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .form-header h2 {
+            color: #333;
+            margin: 0 0 10px 0;
+            font-size: 28px;
+        }
+        .form-header p {
+            color: #666;
+            margin: 0;
+            font-size: 14px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #444;
+            font-size: 14px;
+        }
+        .required::after {
+            content: " *";
+            color: #e74c3c;
+        }
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 12px 15px;
+            box-sizing: border-box;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s;
+            background-color: #f9f9f9;
+        }
+        input[type="text"]:focus, input[type="password"]:focus {
+            outline: none;
+            border-color: #667eea;
+            background-color: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        input[type="text"]:hover, input[type="password"]:hover {
+            border-color: #bbb;
+        }
+        input.error {
+            border-color: #e74c3c;
+            background-color: #ffebee;
+        }
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 14px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+        .btn:active {
+            transform: translateY(0);
+        }
+        .btn-secondary {
+            background: #757575;
+            margin-top: 15px;
+        }
+        .btn-secondary:hover {
+            box-shadow: 0 10px 25px rgba(117, 117, 117, 0.4);
+        }
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            animation: fadeIn 0.5s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .alert-error {
+            background-color: #ffebee;
+            color: #c62828;
+            border-left: 4px solid #ef5350;
+        }
+        .alert-success {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border-left: 4px solid #4caf50;
+        }
+        .alert-warning {
+            background-color: #fff3e0;
+            color: #ef6c00;
+            border-left: 4px solid #ff9800;
+        }
+        .alert-icon {
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+        .links {
+            margin-top: 25px;
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        .links p {
+            color: #666;
+            margin: 0 0 10px 0;
+        }
+        .link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+            display: inline-block;
+            margin-top: 5px;
+        }
+        .link:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+        .logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .logo-icon {
+            font-size: 48px;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        .field-hint {
+            font-size: 12px;
+            color: #888;
+            margin-top: 5px;
+            font-style: italic;
+        }
+        .input-wrapper {
+            position: relative;
+        }
+        .input-wrapper i {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+        }
+        .password-requirements {
+            background: #f5f5f5;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 10px;
+            font-size: 13px;
+        }
+        .password-requirements h4 {
+            margin: 0 0 8px 0;
+            color: #555;
+            font-size: 14px;
+        }
+        .password-requirements ul {
+            margin: 0;
+            padding-left: 20px;
+            color: #666;
+        }
+        .password-requirements li {
+            margin-bottom: 5px;
+        }
+        .password-requirements li.valid {
+            color: #4caf50;
+        }
+        .password-requirements li.valid::before {
+            content: "✓ ";
+            color: #4caf50;
+        }
+        .error-message {
+            color: #e74c3c;
+            font-size: 13px;
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .error-message i {
+            font-size: 14px;
+        }
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .form-actions .btn {
+            flex: 1;
+            margin: 0;
+        }
+        .password-toggle {
+            position: absolute;
+            right: 40px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+            cursor: pointer;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+<div class="container">
+    <div class="logo">
+        <div class="logo-icon">
+            <i class="fas fa-user-plus"></i>
+        </div>
+    </div>
+
+    <div class="form-header">
+        <h2>Создать аккаунт</h2>
+        <p>Заполните форму для регистрации</p>
+    </div>
+
+    <!-- Сообщение об ошибке регистрации -->
+    <div th:if="${param.error}" class="alert alert-error">
+        <i class="fas fa-exclamation-circle alert-icon"></i>
+        <div>
+            <strong>Ошибка регистрации</strong>
+            <p style="margin: 5px 0 0 0; font-size: 14px;">Проверьте введенные данные</p>
+        </div>
+    </div>
+
+    <!-- Сообщение о существующем пользователе -->
+    <div th:if="${param.usernameError}" class="alert alert-warning">
+        <i class="fas fa-exclamation-triangle alert-icon"></i>
+        <div>
+            <strong>Имя пользователя занято</strong>
+            <p style="margin: 5px 0 0 0; font-size: 14px;">Пользователь с таким именем уже существует</p>
+        </div>
+    </div>
+
+    <!-- Сообщение о пустом пароле -->
+    <div th:if="${param.passwordError}" class="alert alert-warning">
+        <i class="fas fa-exclamation-triangle alert-icon"></i>
+        <div>
+            <strong>Пароль не может быть пустым</strong>
+            <p style="margin: 5px 0 0 0; font-size: 14px;">Введите пароль для регистрации</p>
+        </div>
+    </div>
+
+    <form th:action="@{/auth/registration}" th:object="${user}" method="post" id="registrationForm" novalidate>
+        <!-- Поле имени пользователя -->
+        <div class="form-group">
+            <label for="username" class="required">Имя пользователя</label>
+            <div class="input-wrapper">
+                <input type="text"
+                       id="username"
+                       name="username"
+                       th:field="*{username}"
+                       placeholder="Придумайте уникальное имя"
+                       required
+                       oninvalid="this.setCustomValidity('Пожалуйста, введите имя пользователя')"
+                       oninput="this.setCustomValidity(''); checkUsernameAvailability(this.value)">
+                <i class="fas fa-user"></i>
+            </div>
+
+            <!-- Ошибка валидации от Thymeleaf -->
+            <div th:if="${#fields.hasErrors('username')}" class="error-message">
+                <i class="fas fa-exclamation-circle"></i>
+                <span th:errors="*{username}">Ошибка имени пользователя</span>
+            </div>
+
+            <!-- Динамическое сообщение о доступности -->
+            <div id="username-availability" class="field-hint"></div>
+
+            <div class="field-hint">
+                Имя должно быть уникальным, от 3 до 20 символов
+            </div>
+        </div>
+
+        <!-- Поле пароля -->
+        <div class="form-group">
+            <label for="password" class="required">Пароль</label>
+            <div class="input-wrapper">
+                <input type="password"
+                       id="password"
+                       name="password"
+                       th:field="*{password}"
+                       placeholder="Придумайте надежный пароль"
+                       required
+                       minlength="4"
+                       oninput="validatePassword(this.value)"
+                       oninvalid="this.setCustomValidity('Пароль должен содержать минимум 4 символа')">
+                <i class="fas fa-lock"></i>
+                <span class="password-toggle" onclick="togglePasswordVisibility()">
+                    <i class="fas fa-eye"></i>
+                </span>
+            </div>
+
+            <!-- Ошибка валидации от Thymeleaf -->
+            <div th:if="${#fields.hasErrors('password')}" class="error-message">
+                <i class="fas fa-exclamation-circle"></i>
+                <span th:errors="*{password}">Ошибка пароля</span>
+            </div>
+
+            <!-- Индикатор сложности пароля -->
+            <div class="password-requirements">
+                <h4>Требования к паролю:</h4>
+                <ul>
+                    <li id="req-length">Минимум 4 символа</li>
+                    <li id="req-uppercase">Содержит заглавные буквы</li>
+                    <li id="req-lowercase">Содержит строчные буквы</li>
+                    <li id="req-number">Содержит цифры</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Подтверждение пароля -->
+        <div class="form-group">
+            <label for="confirmPassword" class="required">Подтверждение пароля</label>
+            <div class="input-wrapper">
+                <input type="password"
+                       id="confirmPassword"
+                       name="confirmPassword"
+                       placeholder="Повторите пароль"
+                       required
+                       oninput="checkPasswordMatch()">
+                <i class="fas fa-lock"></i>
+            </div>
+            <div id="password-match" class="error-message"></div>
+        </div>
+
+        <!-- Общие ошибки формы -->
+        <div th:if="${#fields.hasErrors()}" class="alert alert-error">
+            <i class="fas fa-exclamation-circle alert-icon"></i>
+            <div>
+                <strong>Ошибки в форме</strong>
+                <p style="margin: 5px 0 0 0; font-size: 14px;">Исправьте отмеченные поля</p>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn">
+                <i class="fas fa-user-plus"></i> Зарегистрироваться
+            </button>
+            <a th:href="@{/auth/login}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Назад
+            </a>
+        </div>
+    </form>
+
+    <div class="links">
+        <p>Уже есть учетная запись?</p>
+        <a th:href="@{/auth/login}" class="link">
+            <i class="fas fa-sign-in-alt"></i> Войти в систему
+        </a>
+    </div>
+</div>
+
+<script>
+    // Переключение видимости пароля
+    function togglePasswordVisibility() {
+        const passwordField = document.getElementById('password');
+        const confirmField = document.getElementById('confirmPassword');
+        const toggleIcon = document.querySelector('.password-toggle i');
+
+        if (passwordField.type === 'password') {
+            passwordField.type = 'text';
+            confirmField.type = 'text';
+            toggleIcon.classList.remove('fa-eye');
+            toggleIcon.classList.add('fa-eye-slash');
+        } else {
+            passwordField.type = 'password';
+            confirmField.type = 'password';
+            toggleIcon.classList.remove('fa-eye-slash');
+            toggleIcon.classList.add('fa-eye');
+        }
+    }
+
+    // Валидация пароля
+    function validatePassword(password) {
+        const reqLength = document.getElementById('req-length');
+        const reqUppercase = document.getElementById('req-uppercase');
+        const reqLowercase = document.getElementById('req-lowercase');
+        const reqNumber = document.getElementById('req-number');
+
+        // Проверка длины
+        if (password.length >= 4) {
+            reqLength.classList.add('valid');
+        } else {
+            reqLength.classList.remove('valid');
+        }
+
+        // Проверка на заглавные буквы
+        if (/[A-Z]/.test(password)) {
+            reqUppercase.classList.add('valid');
+        } else {
+            reqUppercase.classList.remove('valid');
+        }
+
+        // Проверка на строчные буквы
+        if (/[a-z]/.test(password)) {
+            reqLowercase.classList.add('valid');
+        } else {
+            reqLowercase.classList.remove('valid');
+        }
+
+        // Проверка на цифры
+        if (/\d/.test(password)) {
+            reqNumber.classList.add('valid');
+        } else {
+            reqNumber.classList.remove('valid');
+        }
+    }
+
+    // Проверка совпадения паролей
+    function checkPasswordMatch() {
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+        const matchDiv = document.getElementById('password-match');
+
+        if (confirmPassword === '') {
+            matchDiv.innerHTML = '';
+            return;
+        }
+
+        if (password !== confirmPassword) {
+            matchDiv.innerHTML = '<i class="fas fa-exclamation-circle"></i> Пароли не совпадают';
+            document.getElementById('confirmPassword').classList.add('error');
+        } else {
+            matchDiv.innerHTML = '<i class="fas fa-check-circle" style="color:#4caf50"></i> Пароли совпадают';
+            document.getElementById('confirmPassword').classList.remove('error');
+        }
+    }
+
+    // Проверка доступности имени пользователя
+    function checkUsernameAvailability(username) {
+        const availabilityDiv = document.getElementById('username-availability');
+
+        if (username.length < 3) {
+            availabilityDiv.innerHTML = '';
+            return;
+        }
+
+        // В реальном проекте здесь будет AJAX запрос к серверу
+        // Для демонстрации используем статическую проверку
+        if (username.length >= 3) {
+            availabilityDiv.innerHTML = '<i class="fas fa-check-circle" style="color:#4caf50"></i> Имя доступно';
+            availabilityDiv.style.color = '#4caf50';
+        }
+    }
+
+    // Валидация формы перед отправкой
+    document.getElementById('registrationForm').addEventListener('submit', function(event) {
+        const username = document.getElementById('username');
+        const password = document.getElementById('password');
+        const confirmPassword = document.getElementById('confirmPassword');
+        let isValid = true;
+
+        // Сброс ошибок
+        username.classList.remove('error');
+        password.classList.remove('error');
+        confirmPassword.classList.remove('error');
+
+        // Проверка имени пользователя
+        if (username.value.trim() === '') {
+            username.classList.add('error');
+            username.setCustomValidity('Пожалуйста, введите имя пользователя');
+            isValid = false;
+        } else if (username.value.trim().length < 3) {
+            username.classList.add('error');
+            username.setCustomValidity('Имя пользователя должно быть не менее 3 символов');
+            isValid = false;
+        } else {
+            username.setCustomValidity('');
+        }
+
+        // Проверка пароля
+        if (password.value.trim() === '') {
+            password.classList.add('error');
+            password.setCustomValidity('Пожалуйста, введите пароль');
+            isValid = false;
+        } else if (password.value.length < 4) {
+            password.classList.add('error');
+            password.setCustomValidity('Пароль должен содержать минимум 4 символа');
+            isValid = false;
+        } else {
+            password.setCustomValidity('');
+        }
+
+        // Проверка совпадения паролей
+        if (confirmPassword.value.trim() === '') {
+            confirmPassword.classList.add('error');
+            confirmPassword.setCustomValidity('Пожалуйста, подтвердите пароль');
+            isValid = false;
+        } else if (password.value !== confirmPassword.value) {
+            confirmPassword.classList.add('error');
+            confirmPassword.setCustomValidity('Пароли не совпадают');
+            isValid = false;
+        } else {
+            confirmPassword.setCustomValidity('');
+        }
+
+        // Если есть ошибки - предотвращаем отправку
+        if (!isValid) {
+            event.preventDefault();
+            username.reportValidity();
+            password.reportValidity();
+            confirmPassword.reportValidity();
+        }
+    });
+
+    // Сброс цвета рамки при вводе
+    document.getElementById('username').addEventListener('input', function() {
+        this.classList.remove('error');
+    });
+
+    document.getElementById('password').addEventListener('input', function() {
+        this.classList.remove('error');
+        validatePassword(this.value);
+    });
+
+    document.getElementById('confirmPassword').addEventListener('input', function() {
+        this.classList.remove('error');
+        checkPasswordMatch();
+    });
+
+    // Инициализация при загрузке
+    document.addEventListener('DOMContentLoaded', function() {
+        const password = document.getElementById('password').value;
+        if (password) {
+            validatePassword(password);
+            checkPasswordMatch();
+        }
+    });
+</script>
+</body>
+</html>
