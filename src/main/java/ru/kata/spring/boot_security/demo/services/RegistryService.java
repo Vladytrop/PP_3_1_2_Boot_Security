@@ -45,16 +45,5 @@ public class RegistryService {
         );
         user.setRoles(Set.of(role));
         uRepository.save(user);
-//        Set<Role> role = roleRepository.findByName("ROLE_USER");
-//
-//        if (role.isEmpty()) {
-//            Role useRole = new Role();
-//            useRole.setName("ROLE_USER");
-//            roleRepository.save(useRole);
-//            user.setRoles(Set.of(useRole));
-//        } else {
-//            user.setRoles(role);
-//        }
-//        uRepository.save(user);
     }
 }
