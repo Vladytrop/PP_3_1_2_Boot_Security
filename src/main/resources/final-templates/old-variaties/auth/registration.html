@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Регистрация</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .container { max-width: 400px; margin: 0 auto; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; }
+        input { width: 100%; padding: 8px; box-sizing: border-box; }
+        .btn {
+            background-color: #2196F3; color: white;
+            padding: 10px 15px; border: none; cursor: pointer;
+            width: 100%; margin-top: 10px;
+        }
+        .error { color: red; font-size: 0.9em; margin-top: 5px; }
+        .back-link { display: block; margin-top: 20px; text-align: center; }
+        .alert {
+            background-color: #ffebee;
+            color: #c62828;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            border-left: 4px solid #ef5350;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+    <h2>Регистрация нового пользователя</h2>
+
+    <div th:if="${param.usernameError}" class="alert">
+        Имя пользователя уже занято. Пожалуйста, выберите другое.
+    </div>
+
+    <div th:if="${param.passwordError}" class="alert">
+        Пароль не может быть пустым.
+    </div>
+
+    <form th:action="@{/auth/registration}" th:object="${user}" method="post">
+        <div class="form-group">
+            <label for="username">Имя пользователя:</label>
+            <input type="text" id="username" th:field="*{username}" required>
+            <div th:if="${#fields.hasErrors('username')}" class="error">
+                <span th:errors="*{username}"></span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="password">Пароль:</label>
+            <input type="password" id="password" th:field="*{password}" required>
+            <div th:if="${#fields.hasErrors('password')}" class="error">
+                <span th:errors="*{password}"></span>
+            </div>
+        </div>
+
+        <button type="submit" class="btn">Зарегистрироваться</button>
+    </form>
+
+    <a class="back-link" th:href="@{/auth/login}">← Назад к входу</a>
+</div>
+</body>
+</html>
