@@ -12,7 +12,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import ru.kata.spring.boot_security.demo.models.User;
 import ru.kata.spring.boot_security.demo.repositories.URepository;
 
+import java.security.Principal;
+
 @Controller
+@RequestMapping("/user")
 public class UController {
 
     private final URepository uRepository;
@@ -22,11 +25,12 @@ public class UController {
         this.uRepository = uRepository;
     }
 
-    @GetMapping("/user")
+    @GetMapping()
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
-    public String userPage(Model model, Authentication authentication) {
-        User userAuth = (User) authentication.getPrincipal();
-        model.addAttribute("user", userAuth);
-        return "user";
+    public String userPage(Model model, Principal principal) {
+        User user = uRepository.findByUsername(principal.getName()).orElseThrow(
+                () -> new RuntimeException("Пользователь не найден"));
+        model.addAttribute("user", user);
+        return "user-page";
     }
 }

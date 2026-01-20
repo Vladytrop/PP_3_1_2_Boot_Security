@@ -3,7 +3,7 @@
       xmlns:th="https://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Create User</title>
+    <title>Edit User</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 40px; }
         .container { max-width: 500px; margin: 0 auto; }
@@ -18,18 +18,27 @@
             text-decoration: none; border-radius: 4px; border: none;
             cursor: pointer;
         }
-        .btn-submit { background: #4CAF50; color: white; }
+        .btn-update { background: #2196F3; color: white; }
         .btn-cancel { background: #f44336; color: white; }
+        .btn-delete { background: #9E9E9E; color: white; }
         .error { color: red; font-size: 0.9em; margin-top: 5px; }
         .checkbox-group { margin: 10px 0; }
         .checkbox-group label { display: inline; font-weight: normal; }
+        .current-roles { margin: 10px 0; color: #666; }
     </style>
 </head>
 <body>
 <div class="container">
-    <h1>Создание нового пользователя</h1>
+    <h1>Редактирование пользователя</h1>
 
-    <form th:action="@{/admin}" th:object="${user}" method="post">
+    <div th:if="${user}" class="current-roles">
+        <strong>Текущие роли:</strong>
+        <span th:text="${#strings.listJoin(user.roles.![name], ', ')}">ROLE_USER</span>
+    </div>
+
+    <form th:action="@{/admin/{id}(id=${user.id})}" th:object="${user}" method="post">
+        <input type="hidden" name="_method" value="patch">
+
         <div class="form-group">
             <label for="username">Имя пользователя:</label>
             <input type="text" id="username" th:field="*{username}" required>
@@ -39,8 +48,8 @@
         </div>
 
         <div class="form-group">
-            <label for="password">Пароль:</label>
-            <input type="password" id="password" th:field="*{password}" required>
+            <label for="password">Пароль (оставьте пустым, чтобы не менять):</label>
+            <input type="password" id="password" th:field="*{password}">
             <div th:if="${#fields.hasErrors('password')}" class="error">
                 <span th:errors="*{password}"></span>
             </div>
@@ -49,20 +58,32 @@
         <div class="form-group">
             <label>Роли:</label>
             <div class="checkbox-group">
-                <input type="checkbox" id="roleUser" name="roleIds" value="1" checked>
+                <input type="checkbox" id="roleUser" name="roleIds" value="1"
+                       th:checked="${#lists.contains(user.roles.![id], 1)}">
                 <label for="roleUser">ROLE_USER</label>
             </div>
             <div class="checkbox-group">
-                <input type="checkbox" id="roleAdmin" name="roleIds" value="2">
+                <input type="checkbox" id="roleAdmin" name="roleIds" value="3"
+                       th:checked="${#lists.contains(user.roles.![id], 3)}">
                 <label for="roleAdmin">ROLE_ADMIN</label>
             </div>
         </div>
 
         <div>
-            <button type="submit" class="btn btn-submit">Создать</button>
-            <a th:href="@{/admin}" class="btn btn-cancel">Отмена</a>
+            <button type="submit" class="btn btn-update">Обновить</button>
+            <a th:href="@{/templates/old-variaties/admin}" class="btn btn-cancel">Отмена</a>
         </div>
     </form>
+
+    <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd;">
+        <form th:action="@{/admin/{id}(id=${user.id})}" method="post">
+            <input type="hidden" name="_method" value="DELETE">
+            <button type="submit" class="btn btn-delete"
+                    onclick="return confirm('Вы уверены, что хотите удалить этого пользователя?')">
+                Удалить пользователя
+            </button>
+        </form>
+    </div>
 </div>
 </body>
 </html>

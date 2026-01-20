@@ -12,6 +12,7 @@ import ru.kata.spring.boot_security.demo.models.User;
 import ru.kata.spring.boot_security.demo.repositories.RoleRepository;
 import ru.kata.spring.boot_security.demo.repositories.URepository;
 
+import java.security.Principal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -33,42 +34,54 @@ public class AdminController {
     }
 
     @GetMapping()
-    public String index(Model model) {
+    public String adminPage(Model model, Principal principal) {
+        model.addAttribute("currentUsername", principal.getName());
         model.addAttribute("users", uRepository.findAll());
-        return "admin/index";
+        model.addAttribute("newUser", new User());
+        return "admin-page";
     }
 
     @GetMapping("/{id}")
     public String showUser(@PathVariable("id") int id, Model model) {
         model.addAttribute("user", uRepository.findById(id).orElse(null));
-        return "admin/show";
+        return "admin-page";
     }
 
-    @GetMapping("/new")
-    public String newUser(@ModelAttribute("user") User user) {
-        return "admin/new";
-    }
+//    @GetMapping("/admin")
+//    public String newUser(@ModelAttribute("user") User user) {
+//        return "admin-page";
+//    }
 
     @PostMapping()
-    public String createUser(@ModelAttribute("user") User user,
+    public String createUser(@ModelAttribute("newUser") User user,
                              @RequestParam(value = "roleIds", required = false)Set<Long> roleIds,
-                             BindingResult bindingResult) {
-        if (bindingResult.hasErrors()){
-            return "admin/new";
-        }
+                             BindingResult bindingResult, Model model) {
 
         if(user.getUsername().isEmpty()){
             bindingResult.rejectValue("username"
-                    , "username.empty"
+                    , "username"
                     ,"Имя не может быть пустым");
-            return "admin/new";
+            return "admin-page";
         }
 
         if (user.getPassword().isEmpty()){
             bindingResult.rejectValue("password"
-                    , "password.empty"
+                    , "password"
                     ,"Пароль не может быть пустым");
-            return "admin/new";
+            return "admin-page";
+        }
+
+        if (uRepository.findByUsername(user.getUsername()).isPresent()){
+            bindingResult.rejectValue("username"
+                    , "username.exist"
+                    ,"Пользователь с таким именем уже существует");
+            return "admin-page";
+        }
+
+        if (bindingResult.hasErrors()){
+            model.addAttribute("newUser", user);
+            model.addAttribute("users", uRepository.findAll());
+            return "redirect:/admin";
         }
 
         user.setRoles(getRoles(roleIds));
@@ -79,10 +92,10 @@ public class AdminController {
         return "redirect:/admin";
     }
 
-    @GetMapping("/{id}/edit")
+    @GetMapping("/{id}/admin")
     public String editUser(@PathVariable("id") int id, Model model) {
         model.addAttribute("user", uRepository.findById(id).orElse(null));
-        return "admin/edit";
+        return "admin-page";
     }
 
     @PatchMapping("/{id}")
@@ -90,7 +103,8 @@ public class AdminController {
                              @RequestParam(value = "roleIds", required = false)Set<Long> roleIds,
                              BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()){
-            return "admin/edit";
+            model.addAttribute("newUser", new User());
+            return "admin-page";
         }
 
         User existUser = uRepository.findById(user.getId())
@@ -103,15 +117,11 @@ public class AdminController {
             bindingResult.rejectValue("username"
                     , "username.empty"
                     ,"Имя не может быть пустым");
-            return "admin/edit";
+            model.addAttribute("newUser", new User());
+            return "admin-page";
         }
 
-        if (user.getPassword().isEmpty()){
-            bindingResult.rejectValue("password"
-                    ,"password.empty"
-                    , "Пароль не может быть пустым");
-            return "admin/edit";
-        } else {
+        if (!user.getPassword().isEmpty()){
             existUser.setPassword(passwordEncoder.encode(user.getPassword()));
         }
 

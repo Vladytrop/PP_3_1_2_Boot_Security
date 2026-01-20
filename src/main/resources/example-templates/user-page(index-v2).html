@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>User page</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<nav class="navbar navbar-dark bg-dark px-3">
+    <span class="navbar-text text-white">
+        user@mail.ru with roles: USER
+    </span>
+  <a href="#" class="btn btn-outline-light btn-sm">Logout</a>
+</nav>
+
+<div class="container-fluid">
+  <div class="row">
+    <!-- Sidebar -->
+    <aside class="col-2 bg-white border-end vh-100 p-3">
+      <div class="list-group">
+        <a class="list-group-item list-group-item-action active">User</a>
+      </div>
+    </aside>
+
+    <!-- Content -->
+    <main class="col-10 p-4">
+      <h2>User information-page</h2>
+
+      <div class="card mt-3">
+        <div class="card-header fw-bold">
+          About user
+        </div>
+        <div class="card-body">
+          <table class="table table-striped">
+            <thead>
+            <tr>
+              <th>ID</th>
+              <th>First Name</th>
+              <th>Last Name</th>
+              <th>Age</th>
+              <th>Email</th>
+              <th>Role</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <td>3</td>
+              <td>user</td>
+              <td>user</td>
+              <td>30</td>
+              <td>user@mail.ru</td>
+              <td>USER</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Страница пользователя</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<!--Верхняя панель-->
+<nav class="navbar navbar-dark bg-dark px-3">
+    <span class="navbar-text text-white">
+        Пользователь с именем:
+        <span th:text="${username}"></span>
+    </span>
+    <form th:action="@{/logout}" method="post">
+    <button type="submit" class="btn btn-outline-light btn-sm">Выйти</button>
+    </form>
+</nav>
+
+<div class="container-fluid">
+    <div class="row">
+        <!-- Сайдбар юзер -->
+        <aside class="col-2 bg-white border-end vh-100 p-3">
+            <div class="list-group">
+                <a th:href="@{admin}" class="list-group-item list-group-item-action">Admin</a>
+                <a class="list-group-item list-group-item-action active">User</a>
+            </div>
+        </aside>
+
+        <!-- Информация о юзере -->
+        <main class="col-10 p-4">
+            <h2>Страница пользователя</h2>
+
+            <div class="card mt-3">
+                <div class="card-header fw-bold">
+                    Информация
+                </div>
+                <div class="card-body">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Имя пользователя</th>
+                            <th>Роль</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td th:text="${user.id}"></td>
+                            <td th:text="${user.username}"></td>
+                            <td th:text="${#strings.listJoin(user.roles.![name], ', ')}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+</body>
+</html>
