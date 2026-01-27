@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Панель администратора</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<nav class="navbar navbar-dark bg-dark px-3">
+    <span class="navbar-text text-white">
+        Панель: <span id="currentUsername"></span>
+    </span>
+  <form th:action="@{/logout}" method="post">
+    <button type="submit" class="btn btn-outline-light btn-sm">Выйти</button>
+  </form>
+</nav>
+
+<div class="container-fluid">
+  <div class="row">
+    <!-- Сайдбар -->
+    <aside class="col-2 bg-white border-end vh-100 p-3">
+      <div class="list-group">
+        <a href="#" id="adminTab" class="list-group-item list-group-item-action active">Admin</a>
+        <a href="#" id="userTab" class="list-group-item list-group-item-action">User</a>
+      </div>
+      <hr>
+      <div id="currentUserInfo"></div>
+    </aside>
+
+    <!-- Основной контент -->
+    <main class="col-10 p-4">
+      <div id="adminPanel">
+        <h2>Админ-панель</h2>
+
+        <ul class="nav nav-tabs mb-3">
+          <li class="nav-item">
+            <a class="nav-link active" id="usersTabLink" data-bs-toggle="tab" href="#usersTab">Таблица пользователей</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="createTabLink" data-bs-toggle="tab" href="#createTab">Создать пользователя</a>
+          </li>
+        </ul>
+
+        <div class="tab-content">
+          <!-- Таблица пользователей -->
+          <div class="tab-pane fade show active" id="usersTab">
+            <div class="card">
+              <div class="card-header fw-bold">Все пользователи</div>
+              <div class="card-body">
+                <table class="table table-striped align-middle">
+                  <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Username</th>
+                    <th>Roles</th>
+                    <th>Редактировать</th>
+                    <th>Удалить</th>
+                  </tr>
+                  </thead>
+                  <tbody id="usersTable"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Создание нового пользователя -->
+          <div class="tab-pane fade" id="createTab">
+            <div class="card">
+              <div class="card-header fw-bold">Создание нового пользователя</div>
+              <div class="card-body">
+                <form id="createUserForm">
+                  <div class="mb-3">
+                    <label class="form-label">Username</label>
+                    <input type="text" name="username" class="form-control" required>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Password</label>
+                    <input type="password" name="password" class="form-control" required>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Roles</label>
+                    <select name="roles" multiple class="form-select">
+                      <option value="1">ROLE_USER</option>
+                      <option value="3">ROLE_ADMIN</option>
+                    </select>
+                  </div>
+                  <button type="submit" class="btn btn-primary">Создать пользователя</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Модальные окна -->
+        <div id="editModal" class="modal fade" tabindex="-1"></div>
+        <div id="deleteModal" class="modal fade" tabindex="-1"></div>
+      </div>
+
+      <!-- Панель пользователя -->
+      <div id="userPanel" style="display:none;">
+        <h2>Информация о текущем пользователе</h2>
+        <div id="userInfo"></div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/js/admin.js"></script>
+</body>
+</html>
