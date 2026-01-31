@@ -51,7 +51,7 @@ public class AdminController {
 
     @PostMapping()
     public String createUser(@ModelAttribute("user") User user,
-                             @RequestParam(value = "roleIds", required = false)Set<Long> roleIds,
+                             @RequestParam(value = "roleIds", required = false)Set<Role> roleIds,
                              BindingResult bindingResult) {
         if (bindingResult.hasErrors()){
             return "admin/new";
@@ -71,7 +71,9 @@ public class AdminController {
             return "admin/new";
         }
 
-        user.setRoles(getRoles(roleIds));
+//        user.setRoles(getRoles(roleIds));
+
+        user.setRoles(roleIds);
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
@@ -87,17 +89,17 @@ public class AdminController {
 
     @PatchMapping("/{id}")
     public String updateUser(@ModelAttribute("user") User user,
-                             @RequestParam(value = "roleIds", required = false)Set<Long> roleIds,
+                             @RequestParam(value = "roleIds", required = false)Set<Role> roleIds,
                              BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()){
             return "admin/edit";
         }
 
-        User existUser = uRepository.findById(user.getId())
-                        .orElseThrow(() ->
-                                new RuntimeException("Пользователь не найден"));
-
-        existUser.setUsername(user.getUsername());
+//        User existUser = uRepository.findById(user.getId())
+//                        .orElseThrow(() ->
+//                                new RuntimeException("Пользователь не найден"));
+//
+//        existUser.setUsername(user.getUsername());
 
         if(user.getUsername().isEmpty()){
             bindingResult.rejectValue("username"
@@ -106,18 +108,22 @@ public class AdminController {
             return "admin/edit";
         }
 
-        if (user.getPassword().isEmpty()){
-            bindingResult.rejectValue("password"
-                    ,"password.empty"
-                    , "Пароль не может быть пустым");
-            return "admin/edit";
-        } else {
-            existUser.setPassword(passwordEncoder.encode(user.getPassword()));
-        }
+//        if (user.getPassword().isEmpty()){
+//            bindingResult.rejectValue("password"
+//                    ,"password.empty"
+//                    , "Пароль не может быть пустым");
+//            return "admin/edit";
+//        } else {
+//            existUser.setPassword(passwordEncoder.encode(user.getPassword()));
+//        }
 
-       existUser.setRoles(getRoles(roleIds));
+//       existUser.setRoles(getRoles(roleIds));
+//
+//       uRepository.save(existUser);
 
-       uRepository.save(existUser);
+        user.setRoles(roleIds);
+
+        uRepository.save(user);
 
        return "redirect:/admin";
     }
@@ -128,17 +134,17 @@ public class AdminController {
         return "redirect:/admin";
     }
 
-    public Set<Role> getRoles(Set<Long> roleIds){
-        Set<Role> roles;
-        if (roleIds == null || roleIds.isEmpty()){
-            Role defRole = roleRepository.findFirstByName("ROLE_USER").orElseThrow(
-                    () -> new RuntimeException("Роль не найдена")
-            );
-            roles = new HashSet<>();
-            roles.add(defRole);
-        } else {
-            roles = new HashSet<>(roleRepository.findAllById(roleIds));
-        }
-        return roles;
-    }
+//    public Set<Role> getRoles(Set<Long> roleIds){
+//        Set<Role> roles;
+//        if (roleIds == null || roleIds.isEmpty()){
+//            Role defRole = roleRepository.findFirstByName("ROLE_USER").orElseThrow(
+//                    () -> new RuntimeException("Роль не найдена")
+//            );
+//            roles = new HashSet<>();
+//            roles.add(defRole);
+//        } else {
+//            roles = new HashSet<>(roleRepository.findAllById(roleIds));
+//        }
+//        return roles;
+//    }
 }
